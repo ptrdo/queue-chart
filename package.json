@@ -1,0 +1,27 @@
+{
+  "name": "queue-chart",
+  "version": "v0.1.0",
+  "description": "A client view for visualizing the progress of work processing on a high performance computing cluster.",
+  "homepage": "https://github.com/ptrdo/queue-chart#readme",
+  "main": "queue-chart.js",
+  "files": [
+    "/queue-chart.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptrdo/queue-chart.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ptrdo/queue-chart/issues"
+  },
+  "authors": [
+    "Peter Sylwester <psylwester@idmod.org>"
+  ],
+  "license": "CC-BY-NC-SA-4.0",
+  "publishConfig": {
+    "registry": "https://packages.idmod.org/api/npm/idm-npm-staging/"
+  }
+}

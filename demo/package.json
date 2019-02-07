@@ -1,0 +1,33 @@
+{
+  "name": "queue-chart-demo",
+  "version": "0.1.0",
+  "description": "Demonstration of Means to Monitor Progress of Work Processing on HPC Cluster",
+  "homepage": "https://github.com/ptrdo/queue-chart#readme",
+  "author": "psylwester@idmod.org",
+  "license": "CC-BY-NC-SA-4.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --progress --colors --config ./webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptrdo/queue-chart.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ptrdo/queue-chart/issues"
+  },
+  "keywords": [
+    "javascript",
+    "dashboard",
+    "visualization",
+    "hpc"
+  ],
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "babel-loader": "^8.0.5",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.1.14"
+  }
+}
