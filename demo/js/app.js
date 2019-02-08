@@ -1,4 +1,4 @@
-import $ from "jquery";
+import "jquery";
 import Config from "./config";
 import Index from "./index.js";
 

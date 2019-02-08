@@ -17,6 +17,13 @@ module.exports = {
   resolve: {
     extensions: ["*", ".js", ".jsx"]
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      "window.jQuery": "jquery"
+    })
+  ],
   output: {
     path: __dirname + "/build",
     publicPath: "/",

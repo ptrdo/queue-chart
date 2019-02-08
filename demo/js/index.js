@@ -17,9 +17,9 @@ class Index {
       alert("done!");
       chart.render();
     });
-    
+
     rootElement.appendChild(button);
-    console.log("The Index module has been rendered!");
+    console.log("The Index module has been rendered!", $(button).get(0));
 
     setTimeout(function () {
       document.documentElement.setAttribute("data-useragent", navigator.userAgent);
