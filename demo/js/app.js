@@ -1,3 +1,4 @@
+import $ from "jquery";
 import Config from "./config";
 import Index from "./index.js";
 
@@ -9,11 +10,12 @@ const hello = function () {
 };
 
 const init = function () {
-  element = document.getElementById("main");
+  element = document.getElementById("dashboard");
   index.render(element);
   if (!("demo" in window)) {
     window["demo"] = {};
   }
+  console.log("$", $("body").get(0));
 };
 
 document.addEventListener("DOMContentLoaded", init);
