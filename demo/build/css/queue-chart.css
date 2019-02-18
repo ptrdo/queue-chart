@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+/*
+ * (c) 2019 Intellectual Ventures
+ * Module: Dashboard
+ * Sub-Module: queue-chart
+ *
+ * @author psylwester(at)intven(dot)com
+ * @version 0.1.0 2019/02/08
+ * @requires normalize.css (or equivalent)
+ *
+ */
+
+#dashboard [itemid=QueueChart].chart figure {
+  background: whitesmoke;
+  min-height: 4rem;
+}
+
+#dashboard [itemid=QueueChart].chart > button {
+  margin: 1em auto;
+  padding: 0.5em 1em;
+}

@@ -1,0 +1,59 @@
+{
+  "Stats": {
+    "efad87e3-7529-e911-a2bf-c4346bcb1554": {
+      "SimulationCount": 100,
+      "SimulationStateCount": {
+        "Running": 19,
+        "Succeeded": 79,
+        "Failed": 2
+      }
+    },
+    "e45265d7-b029-e911-a2bf-c4346bcb1554": {
+      "SimulationCount": 100,
+      "SimulationStateCount": {
+        "Running": 25,
+        "Succeeded": 71,
+        "Failed": 4
+      }
+    },
+    "8115b4cb-432a-e911-a2bf-c4346bcb1554": {
+      "SimulationCount": 100,
+      "SimulationStateCount": {
+        "Running": 30,
+        "Succeeded": 61,
+        "Failed": 9
+      }
+    },
+    "45fa4250-6f2a-e911-a2bf-c4346bcb1554": {
+      "SimulationCount": 100,
+      "SimulationStateCount": {
+        "Running": 30,
+        "Succeeded": 68,
+        "Failed": 2
+      }
+    },
+    "7ba65616-282b-e911-a2c5-c4346bcb7273": {
+      "SimulationCount": 16,
+      "SimulationStateCount": {
+        "Running": 5,
+        "Succeeded": 11
+      }
+    },
+    "99b7796b-4d2b-e911-a2c5-c4346bcb7273": {
+      "SimulationCount": 17600,
+      "SimulationStateCount": {
+        "Commissioned": 4289,
+        "Running": 28,
+        "Succeeded": 13283
+      }
+    },
+    "1fdf335d-c72b-e911-a2c5-c4346bcb7273": {
+      "SimulationCount": 500,
+      "SimulationStateCount": {
+        "Commissioned": 25,
+        "Running": 27,
+        "Succeeded": 448
+      }
+    }
+  }
+}
