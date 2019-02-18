@@ -15,6 +15,22 @@ class Chart {
   render(rootElement=document) {
     console.log("The Chart module has been rendered!");
   };
+  
+  refresh(source) {
+    
+    let url = source; 
+    let body = {};
+    
+    fetch(url, {
+      method: "GET"
+    })
+    .then(response => response.json())
+    .then(function (data) {
+      console.log("data", data);    
+    })
+    .catch(error => console.error("Error", error));
+    
+  };
 
   load() {};
   unload() {};

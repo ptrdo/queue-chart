@@ -55,7 +55,26 @@
           <section id="dashboard" class="active">
             <div class="wrap">
               <div class="truss">
-                <div itemid="QueueChart" class="chart queue fullwidth">
+                <div itemscope itemref="metric" itemid="{{ name }}" class="{{ css }}" hidden>
+                  <form class="{{ type }}">
+                    <figure>
+                      <figcaption>
+                        <dl>
+                          <dt itemprop="title" title="checkbox toggles showing or hiding this chart">
+                            <label><input type="checkbox" name="enabled" checked="{{ boolean:enabled }}" /><span>{{ title }}</span><dfn>hidden</dfn></label>
+                          </dt>
+                          <dd itemprop="description">{{ description }}</dd>
+                        </dl>
+                        <legend>
+                          <button class="refresh" title="Get Latest"><i class="material-icons">refresh</i></button>
+                        </legend>
+                      </figcaption>
+                      <output title="{{ name }}" id="{{ name }}"></output>
+                    </figure>
+                  </form>
+                </div>
+              </div>
+              <div itemid="QueueChart" class="chart queue fullwidth">
                   <form>
                     <figure></figure>
                   </form>

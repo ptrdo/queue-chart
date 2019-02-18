@@ -14,8 +14,8 @@ class Index {
     button.appendChild(document.createTextNode("Do It"));
     button.setAttribute("style", "padding: 0.5em 1em;")
     button.addEventListener("click", function(event) {
-      alert("done!");
       chart.render();
+      chart.refresh("data/QueueState.json")
     });
 
     // rootElement.appendChild(button);

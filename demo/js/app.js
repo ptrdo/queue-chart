@@ -15,7 +15,7 @@ const init = function () {
   if (!("demo" in window)) {
     window["demo"] = {};
   }
-  console.log("$", $("body").get(0));
+  // console.log("$", $("body").get(0));
 };
 
 document.addEventListener("DOMContentLoaded", init);
