@@ -31,7 +31,6 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "jquery": "^3.3.1",
-    "microdata-template": "^2.0.3"
+    "jquery": "^3.3.1"
   }
 }

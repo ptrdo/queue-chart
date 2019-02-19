@@ -21,7 +21,13 @@
     "Peter Sylwester <psylwester@idmod.org>"
   ],
   "license": "CC-BY-NC-SA-4.0",
-  "publishConfig": {
-    "registry": "https://packages.idmod.org/api/npm/idm-npm-staging/"
+  "keywords": [
+    "javascript",
+    "dashboard",
+    "visualization",
+    "hpc"
+  ],
+  "dependencies": {
+    "microdata-template": "^2.1.0"
   }
 }

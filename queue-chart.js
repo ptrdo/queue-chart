@@ -1,3 +1,5 @@
+import templater from "microdata-template";
+
 class Chart {
   /**
    * queue-chart
@@ -13,7 +15,11 @@ class Chart {
   };
 
   render(rootElement=document) {
-    console.log("The Chart module has been rendered!");
+    
+    console.log("The Chart module has been rendered!", templater);
+
+    let templateElement = rootElement.querySelector("[itemscope]");
+    // templater.render(templateElement, collection);
   };
   
   refresh(source) {
