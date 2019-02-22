@@ -1,7 +1,5 @@
 import Config from "./config";
-import Chart from "../../queue-chart.js";
-
-let chart = new Chart();
+import queue from "../../queue-chart.js";
 
 class Index {
 
@@ -14,8 +12,11 @@ class Index {
     button.appendChild(document.createTextNode("Do It"));
     button.setAttribute("style", "padding: 0.5em 1em;")
     button.addEventListener("click", function(event) {
-      chart.render();
-      chart.refresh("data/QueueState.json")
+      // queue.render();
+      queue.refresh("data/QueueState.json"); 
+      
+      console.log("queue", queue);
+      
     });
 
     // rootElement.appendChild(button);

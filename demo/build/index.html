@@ -75,7 +75,30 @@
                 </div>
                 <div itemid="QueueChart" class="chart queue fullwidth">
                   <form>
-                    <figure></figure>
+                    <figure>
+                      <table>
+                        <thead>
+                          <th>&nbsp;</th>
+                          <th>Owner</th>
+                          <th>Count</th>
+                          <th>Created</th>
+                        </thead>
+                        <tbody itemref="{{ KEY }}">
+                          <tr itemscope itemref="Experiment" itemid="{{ ExperimentId }}" hidden>
+                            <td itemprop="Selection"><input type="checkbox"></td>
+                            <td itemprop="Owner" title="{{ Owner }}">
+                              <span>{{ Owner }}</span>
+                            </td>
+                            <td itemprop="SimulationCount" title="{{ SimulationCount }}">
+                              <span>{{ SimulationCount }}</span>
+                            </td>
+                            <td itemprop="LastCreateTime" title="{{ LastCreateTime }}">
+                              <time datetime="{{ LastCreateTime }}">{{ LastCreateTimeLocalSplit.1 }}</time>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </figure>
                   </form>
                 </div>
               </div>
