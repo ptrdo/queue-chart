@@ -96,22 +96,22 @@ const refresh = function (source) {
 
 const render = function (rootElement=document) {
 
-  let templateBody = rootElement.querySelector("TBODY[itemscope]");
-  // templater.render(templateBody, collection.latest);
+  let table = rootElement.querySelector("DIV[itemid=QueueChart] TABLE");
+  let tbody = !!table ? table.querySelector("TBODY[itemref]") : null;
 
-  Object.values(PRIORITY).forEach(bucket => {
-    let key = bucket.key;
-    let body = templateBody.cloneNode(true);
-    body.setAttribute("itemid", key);
-    templateBody.parentNode.appendChild(body);
-    setTimeout(function(key) {
-      let temp = rootElement.querySelector(`TBODY[itemid=${key}]`);
-      console.log("temp", `TBODY[itemid=${key}]`, temp);
+  if (!!tbody) {
+    Object.values(PRIORITY).forEach(bucket => {
+      let key = bucket.key;
+      let temp = tbody.cloneNode(true);
+      temp.setAttribute("itemid", key);
+      table.appendChild(temp);
       templater.render(temp.querySelector("TR[hidden]"), collection.latest[key]);
-    },0);
-  });
+    });
+  } else {
+    alert("failed to render!");
+    console.error("failed to render", collection.latest);
+  }
 
-  console.log("render", collection.latest);
 };
 
 export default { refresh };

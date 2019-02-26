@@ -12,11 +12,99 @@
  */
 
 #dashboard [itemid=QueueChart].chart figure {
-  background: whitesmoke;
+  background: white;
   min-height: 4rem;
 }
 
 #dashboard [itemid=QueueChart].chart > button {
   margin: 1em auto;
   padding: 0.5em 1em;
+}
+
+[itemid=QueueChart] table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 8px solid white;
+}
+
+[itemid=QueueChart] table tbody {
+  border-top: 1em solid white;
+}
+
+[itemid=QueueChart] table th,
+[itemid=QueueChart] table td {
+  height: 2em;
+  padding: 0 1em;
+  vertical-align: middle;
+  color: #0072a2;
+  background: #f7f5d0;
+  border-bottom: 3px solid white;
+}
+
+[itemid=QueueChart] table th.min,
+[itemid=QueueChart] table td.min {
+  width: 1em;
+  padding: 0 0.5em;
+}
+
+[itemid=QueueChart] table td.toggle,
+[itemid=QueueChart] table td.goto {
+  cursor: pointer;
+}
+
+[itemid=QueueChart] table td.cancel {
+  color: hotpink;
+  cursor: pointer;
+}
+
+[itemid=QueueChart] table td i.fas {
+  display: none;
+}
+
+[itemid=QueueChart] table td:hover i.fas {
+  display: inline;
+}
+
+[itemid=QueueChart] table td:hover i.fal,
+[itemid=QueueChart] table td:hover i.far {
+  display: none;
+}
+
+[itemid=QueueChart] table td:active {
+  color: black;
+}
+
+[itemid=QueueChart] table td[itemprop=QueueCount] {
+  padding: 0 3em;
+  font-weight: bold;
+  background: #20b2aa;
+  color: white;
+  border-left: 3px solid white;
+}
+
+[itemid=QueueChart] table td[itemprop=ProcessCount] {
+  padding: 0 3em;
+  font-weight: bold;
+  background: #ffa500;
+  color: white;
+  border-left: 3px solid white;
+  border-right: 3px solid white;
+}
+
+[itemid=QueueChart] table td[itemprop=DoneCount] {
+  padding: 0 3em;
+  font-weight: bold;
+  background: #2e8b57;
+  color: white;
+  border-left: 3px solid white;
+}
+
+[itemid=QueueChart] table td[itemprop=Owner] span {
+  color: firebrick;
+}
+
+[itemid=QueueChart] table td[itemprop=Owner] span:after {
+  content: ",";
+  margin-right: 0.5em;
 }

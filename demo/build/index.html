@@ -7,6 +7,7 @@
   <title>queue-chart: Demonstration</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="css/normalize.css?v=8.0.1">
+  <link rel="stylesheet" href="fa/css/all.css">
   <link rel="stylesheet" href="css/idm-font.css">
   <link rel="stylesheet" href="css/idm-global.css">
   <link rel="stylesheet" href="css/idm-core.css">
@@ -78,21 +79,33 @@
                     <figure>
                       <table>
                         <thead>
-                          <th>&nbsp;</th>
-                          <th>Owner</th>
-                          <th>Count</th>
+                          <th class="min">&nbsp;</th>
+                          <th>Meta</th>
+                          <th class="min">&nbsp;</th>
+                          <th>Queued</th>
+                          <th>Processing</th>
+                          <th>Done</th>
+                          <th class="min">&nbsp;</th>
                           <th>Created</th>
                         </thead>
                         <tbody itemref="{{ KEY }}">
                           <tr itemscope itemref="Experiment" itemid="{{ ExperimentId }}" hidden>
-                            <td itemprop="Selection"><input type="checkbox"></td>
-                            <td itemprop="Owner" title="{{ Owner }}">
-                              <span>{{ Owner }}</span>
+                            <td itemprop="Selection" class="min toggle"><i class="far fa-caret-circle-right"></i><i class="fas fa-caret-circle-right"></i></td>
+                            <td itemprop="Owner" class="left" title="{{ Owner }}">
+                              <span>{{ Owner }}</span><em>Name, Description</em>
                             </td>
-                            <td itemprop="SimulationCount" title="{{ SimulationCount }}">
+                            <td class="min goto"><i class="fal fa-external-link-square"></i><i class="fas fa-external-link-square"></i></td>
+                            <td itemprop="QueueCount" title="{{ QueueCount }}">
+                              <span>10</span>
+                            </td>
+                            <td itemprop="ProcessCount" class="process" title="{{ SimulationCount }}">
                               <span>{{ SimulationCount }}</span>
                             </td>
-                            <td itemprop="LastCreateTime" title="{{ LastCreateTime }}">
+                            <td itemprop="DoneCount" title="{{ DoneCount }}">
+                              <span>10</span>
+                            </td>
+                            <td class="min cancel"><i class="fal fa-hand-paper"></i><i class="fas fa-hand-paper"></i></td>
+                            <td itemprop="LastCreateTime" class="right" title="{{ LastCreateTime }}">
                               <time datetime="{{ LastCreateTime }}">{{ LastCreateTimeLocalSplit.1 }}</time>
                             </td>
                           </tr>
