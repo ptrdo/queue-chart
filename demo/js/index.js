@@ -12,8 +12,9 @@ class Index {
     button.appendChild(document.createTextNode("Do It"));
     button.setAttribute("style", "padding: 0.5em 1em;")
     button.addEventListener("click", function(event) {
+
       // queue.render();
-      queue.refresh("data/QueueState.json"); 
+      queue.refresh();
       
       console.log("queue", queue);
       

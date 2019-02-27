@@ -33,6 +33,14 @@ const PRIORITY = {
   }
 };
 
+const ENDPOINT = "data/";
+
+const API = {
+  "QueueState": "QueueState.json",
+  "Stats": "Stats.json",
+  "Experiments": "Experiments.json"
+};
+
 const collection = {
 
   output: {},
@@ -76,9 +84,9 @@ const collection = {
   }
 };
 
-const refresh = function (source) {
+const refresh = function () {
 
-  let url = source;
+  let url = ENDPOINT+API.QueueState;
   let body = {};
 
   fetch(url, {
