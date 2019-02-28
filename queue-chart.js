@@ -74,31 +74,65 @@ const collection = {
     });
     return data;
   },
+  
+  merge: function(data) {
+    Object.values(this.output).forEach(value => {
+      if (Array.isArray(value)) {
+        value.forEach(item => {
+          if ("ExperimentId" in item && item.ExperimentId in data) {
+            Object.assign(item,  data[item.ExperimentId]);
+          }
+        });
+      }
+    });
+  },
 
-  set input (data) {
+  update: function (data) {
     this.output = this.prep(data);
+    return this.output;
+  },
+  
+  append: function (data) {
+    this.merge(data);
+    return this.output;
   },
 
   get latest () {
+    console.log("collection.latest", this.output);
     return this.output;
   }
 };
 
+const fetchAll = function (successCallback, failureCallback)  {
+
+  fetch(ENDPOINT+API.QueueState, { method:"GET" })
+  .then(response => response.json())
+  .then(data => collection.update(data.QueueState))
+  .then(response => fetch(ENDPOINT+API.Stats, { method:"GET" }))
+  .then(response => response.json())
+  .then(data => collection.append(data.Stats))
+  .then(update => new Promise(function(resolve) {
+    successCallback();
+    setTimeout(function () {
+      resolve(update);
+    }, 0);
+  }))
+  .catch(function (error) {
+    failureCallback(error);
+  })
+  .finally(function () {
+    console.log("Done!");
+  });
+ 
+};
+
+const recoup = function () {
+  
+};
+
 const refresh = function () {
 
-  let url = ENDPOINT+API.QueueState;
-  let body = {};
-
-  fetch(url, {
-    method: "GET"
-  })
-  .then(response => response.json())
-  .then(function (data) {
-    console.log("data", data);
-    collection.input = data.QueueState;
-    render();
-  })
-  .catch(error => console.error("Error", error));
+  fetchAll(render, recoup);
 
 };
 
