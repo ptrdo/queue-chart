@@ -46,20 +46,32 @@ const collection = {
   output: {},
 
   prep: function (data) {
+    
+    const mockedData = true;
+    
+    const vitalizeMockDate = function (dateString) {
+      let yesterday = new Date(Date.now() - (36 * 60 * 60 * 1000));
+      let yesterdate = yesterday.toISOString().split("T")[0];
+      let recently = new Date(Date.parse(yesterdate + "T" + dateString.split("T")[1]) + (16 * 60 * 60 * 1000));
+      return recently.toISOString();
+    };
+  
     const dateTransform = function (node) {
       /* preprocess dates from service-supplied GMT to ui-conducive Local */
-      let basis, local, split;
+      let basis, basic, simple, elapsed;
       if (node.hasOwnProperty("LastCreateTime")) {
-        basis = new Date(Date.parse(node.LastCreateTime));
-        local = basis.toLocaleString();
-        split = local.split(/,?\s+/);
-        if (split.length > 2) {
-          /* IE doesn't support a negative lookahead */
-          split[1] = [split[1], split[2]].join(" ");
+        if (mockedData) {
+          node.LastCreateTime = vitalizeMockDate(node.LastCreateTime);
         }
-        node["LastCreateTimeLocalSplit"] = split;
+        basis = new Date(Date.parse(node.LastCreateTime));
+        basic = basis.toLocaleDateString("en-US",{ month: "long", day: "numeric", hour:"2-digit", minute:"2-digit", second:"2-digit" });
+        simple = basis.toLocaleDateString("en-US",{ weekday:"short", hour:"2-digit", minute:"2-digit" });
+        elapsed = ((Date.now() - basis)/1000/60/60).toPrecision(4);
+        node["LastCreateBasic"] = basic;
+        node["LastCreateParts"] = simple.replace(/^(.*)(\d+\:\d+)(\s+)(.*)$/, "$1$2$4").split(/\s+/);
+        node["ElapsedTime"] = elapsed;
       }
-    }
+    };
     Object.values(data).forEach(value => {
       if (Array.isArray(value)) {
         value.forEach(item => {
@@ -145,7 +157,8 @@ const render = function (rootElement=document) {
     Object.values(PRIORITY).forEach(bucket => {
       let key = bucket.key;
       let temp = tbody.cloneNode(true);
-      temp.setAttribute("itemid", key);
+      temp.setAttribute("itemref", key);
+      temp.querySelector("TH").innerText = bucket.name;
       table.appendChild(temp);
       templater.render(temp.querySelector("TR[hidden]"), collection.latest[key]);
     });

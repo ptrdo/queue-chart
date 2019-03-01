@@ -79,17 +79,20 @@
                     <figure>
                       <table>
                         <thead>
+                          <th>Priority</th>
                           <th class="min">&nbsp;</th>
-                          <th>Meta</th>
+                          <th>Owner</th>
                           <th class="min">&nbsp;</th>
                           <th>Queued</th>
                           <th>Processing</th>
                           <th>Done</th>
                           <th class="min">&nbsp;</th>
                           <th>Created</th>
+                          <th>Elapsed</th>
                         </thead>
                         <tbody itemref="{{ KEY }}">
                           <tr itemscope itemref="Experiment" itemid="{{ ExperimentId }}" hidden>
+                            <th itemprop="Priority"></th>
                             <td itemprop="Selection" class="min toggle"><i class="far fa-caret-circle-right"></i><i class="fas fa-caret-circle-right"></i></td>
                             <td itemprop="Owner" class="left" title="{{ Owner }}">
                               <span>{{ Owner }}</span>
@@ -105,8 +108,11 @@
                               <span>10</span>
                             </td>
                             <td class="min cancel"><i class="fal fa-hand-paper"></i><i class="fas fa-hand-paper"></i></td>
-                            <td itemprop="LastCreateTime" class="right" title="{{ LastCreateTime }}">
-                              <time datetime="{{ LastCreateTime }}">{{ LastCreateTimeLocalSplit.1 }}</time>
+                            <td itemprop="LastCreateTime" class="right" title="{{ LastCreateBasic }}">
+                              <time datetime="{{ LastCreateTime }}"><var>{{ LastCreateParts.0 }}</var><var>{{ LastCreateParts.1 }}</var></time>
+                            </td>
+                            <td itemprop="ElapsedTime" class="right" >
+                              <span>{{ ElapsedTime }}</span>
                             </td>
                           </tr>
                         </tbody>

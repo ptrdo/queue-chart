@@ -6,12 +6,22 @@
  * Sub-Module: queue-chart
  *
  * @author psylwester(at)intven(dot)com
- * @version 0.1.0 2019/02/08
- * @requires normalize.css (or equivalent)
+ * @version 0.1.0 2019/02/28
+ * @requires normalize.css, idm-dashboard.css
  *
  */
 
+/* UNDO idm-dashboard.css */
+
+#dashboard .chart:not(.no-data) figure:hover
+{
+  background: white;
+}
+
+/* PROTOTYPE */
+
 #dashboard [itemid=QueueChart].chart figure {
+  font-family: "Roboto Mono", Consolas, Menlo, "Lucida Console", mononspace;
   background: white;
   min-height: 4rem;
 }
@@ -40,6 +50,10 @@
   color: #0072a2;
   background: #f7f5d0;
   border-bottom: 3px solid white;
+}
+
+[itemid=QueueChart] table th {
+  background: none;
 }
 
 [itemid=QueueChart] table th.min,
@@ -100,11 +114,23 @@
   border-left: 3px solid white;
 }
 
-[itemid=QueueChart] table td[itemprop=Owner] span {
-  color: firebrick;
+[itemid=QueueChart] table th:first-child {
+  background: none;
+  text-align: right;
+  color: orange;
 }
 
-[itemid=QueueChart] table td[itemprop=Owner] span:after {
-  content: ",";
-  margin-right: 0.5em;
+[itemid=QueueChart] table tbody tr:not(:nth-child(2)) th[itemprop=Priority] {
+  color: transparent;
+}
+
+[itemid=QueueChart] table tbody tr td:last-child {
+  border-left: 3px solid white;
+}
+
+[itemid=QueueChart] table time {
+  min-width: 7em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
