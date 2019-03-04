@@ -1,4 +1,5 @@
 import Config from "./config";
+import Auth from "comps-ui-auth";
 import queue from "../../queue-chart.js";
 
 class Index {
@@ -8,6 +9,7 @@ class Index {
   };
 
   render(rootElement=document) {
+    
     let button = document.createElement("BUTTON");
     button.appendChild(document.createTextNode("Do It"));
     button.setAttribute("style", "padding: 0.5em 1em;")
@@ -18,6 +20,25 @@ class Index {
       
       console.log("queue", queue);
       
+    });
+    
+    let authMenu = document.querySelector("a.nav-account");
+    authMenu.addEventListener("click", function (event) {
+      let menu = event.target;
+      while (!/^(LI|MENU)$/i.test(menu.nodeName)) {
+        menu = menu.parentElement;
+      }
+      menu.classList.toggle("active"); 
+    });
+    
+    let authToggle = document.querySelector("a[data-action=session]");
+    authToggle.addEventListener("click", function (event) {
+      let menu = event.target;
+      while (!menu.classList.contains("active")) {
+        menu = menu.parentElement;
+      }
+      menu.classList.remove("active");
+      Auth.signout(Config.appName);
     });
 
     // rootElement.appendChild(button);

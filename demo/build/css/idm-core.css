@@ -745,9 +745,12 @@ menu.dropdown > ul > li > a:hover > ins
   background-color: white;
   border-top: 1px solid #bcc6cc;
   cursor: pointer;
-  transition-property: all;
+  transition-property: all; 
   transition-duration: 200ms;
   transition-timing-function: ease-out;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
 }
 
 #footer nav
