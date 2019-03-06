@@ -65,6 +65,24 @@
   border-top: 1em solid white;
 }
 
+[itemid=QueueChart] table thead th:last-child {
+  white-space: nowrap;
+}
+
+[itemid=QueueChart] table thead th:last-child button.refresh {
+  float: none !important;
+  margin: 0 -3em 0 1em !important;
+}
+
+@media only screen and (max-width: 1020px) {
+  [itemid=QueueChart] table thead th:last-child span {
+    display: none;
+  }
+  [itemid=QueueChart] table thead th:last-child button.refresh {
+    margin: 0 !important;
+  }
+}
+
 [itemid=QueueChart] table th,
 [itemid=QueueChart] table td {
   height: 2.7em;
@@ -123,43 +141,43 @@
   color: black;
 }
 
-[itemid=QueueChart] table td[itemprop=QueueCount] {
-  padding: 0 3em;
+[itemid=QueueChart] table td[itemprop=PreActive] {
+  padding: 0 !important;
   font-weight: bold;
-  background: #20b2aa;
+  background: #daf4f8;
   color: white;
   border-left: 3px solid white;
 }
 
-[itemid=QueueChart] table tr:hover td[itemprop=QueueCount] {
-  background: rgba(32,178,179,0.6);
+[itemid=QueueChart] table tr:hover td[itemprop=PreActive] {
+  background: #c3e9ef;
   color: black;
 }
 
-[itemid=QueueChart] table td[itemprop=ProcessCount] {
-  padding: 0 3em;
+[itemid=QueueChart] table td[itemprop=Active] {
+  padding: 0 !important;
   font-weight: bold;
-  background: #ffa500;
+  background: #daf4f8;
   color: white;
   border-left: 3px solid white;
   border-right: 3px solid white;
 }
 
-[itemid=QueueChart] table tr:hover td[itemprop=ProcessCount] {
-  background: rgba(255,165,0,0.6);
+[itemid=QueueChart] table tr:hover td[itemprop=Active] {
+  background: #c3e9ef;
   color: black;
 }
 
-[itemid=QueueChart] table td[itemprop=DoneCount] {
-  padding: 0 3em;
+[itemid=QueueChart] table td[itemprop=PostActive] {
+  padding: 0 !important;
   font-weight: bold;
-  background: #2e8b57;
+  background: #daf4f8;
   color: white;
   border-left: 3px solid white;
 }
 
-[itemid=QueueChart] table tr:hover td[itemprop=DoneCount] {
-  background: rgba(46,139,87,0.6);
+[itemid=QueueChart] table tr:hover td[itemprop=PostActive] {
+  background: #c3e9ef;
   color: black;
 }
 
@@ -182,4 +200,75 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+/* CHARTING */
+
+td ul {
+  display: flex;
+  width: inherit;
+  height: inherit;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+td ul li {
+  flex-grow: 1;
+  line-height: 2.7;
+  padding: 0 1em;
+  margin-right: 1px;
+}
+
+td ul li.Orphan
+{
+  background-color: deepskyblue;
+}
+
+td ul li.Created
+{
+  background-color: slategray;
+}
+
+td ul li.QueuedForCommission,
+td ul li.CommissionRequested,
+td ul li.Provisioning,
+td ul li.Commissioned {
+  background-color: lightseagreen;
+}
+
+td ul li.Validating,
+td ul li.Running
+{
+  background-color: orange;
+}
+
+td ul li.Waiting
+{
+  background-color: cornflowerblue;
+}
+
+td ul li.Retry,
+td ul li.QueuedForResume,
+td ul li.ResumeRequested,
+td ul li.Resumed {
+  background-color: springgreen;
+}
+
+td ul li.Succeeded
+{
+  background-color: seagreen;
+}
+
+td ul li.Failed
+{
+  background-color: red;
+}
+
+td ul li.CancelRequested,
+td ul li.Canceling,
+td ul li.Canceled
+{
+  background-color: hotpink;
 }

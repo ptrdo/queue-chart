@@ -10,6 +10,14 @@ import templater from "microdata-template";
  *
  */
 
+const ENDPOINT = "data/";
+
+const API = {
+  "QueueState": "QueueState.json",
+  "Stats": "Stats.json",
+  "Experiments": "Experiments.json"
+};
+
 const PRIORITY = {
   1: { 
     key: "Highest", 
@@ -33,12 +41,30 @@ const PRIORITY = {
   }
 };
 
-const ENDPOINT = "data/";
-
-const API = {
-  "QueueState": "QueueState.json",
-  "Stats": "Stats.json",
-  "Experiments": "Experiments.json"
+const STATE = {
+  "PreActive": [
+    "Created",
+    "QueuedForCommission",
+    "CommissionRequested",
+    "Commissioned",
+    "Provisioning",
+    "Validating"      
+  ],
+  "Active": [
+    "Running",
+    "Waiting",
+    "QueuedForResume",
+    "ResumeRequested",
+    "Resumed",
+    "Retry"
+  ],
+  "PostActive": [
+    "CancelRequested",
+    "Canceling",
+    "Canceled",
+    "Succeeded",
+    "Failed"
+  ]
 };
 
 const collection = {
@@ -110,7 +136,6 @@ const collection = {
   },
 
   get latest () {
-    console.log("collection.latest", this.output);
     return this.output;
   }
 };
@@ -148,6 +173,20 @@ const refresh = function () {
 
 };
 
+const redraw = function (rootElement=document) {
+  
+  let table = rootElement.querySelector("DIV[itemid=QueueChart] TABLE");
+  if (!!table) {
+    let template = table.querySelector("TBODY[hidden]");
+    while (!!table && table.lastChild !== template) {
+      table.removeChild(table.lastChild);
+    }
+    setTimeout(function () {
+      fetchAll(render, recoup);
+    },0);
+  }
+};
+
 const render = function (rootElement=document) {
 
   let table = rootElement.querySelector("DIV[itemid=QueueChart] TABLE");
@@ -158,10 +197,35 @@ const render = function (rootElement=document) {
       let key = bucket.key;
       let temp = tbody.cloneNode(true);
       temp.setAttribute("itemref", key);
+      temp.removeAttribute("hidden");
       temp.querySelector("TH").innerText = bucket.name;
       table.appendChild(temp);
       templater.render(temp.querySelector("TR[hidden]"), collection.latest[key]);
     });
+    
+    setTimeout(function () {
+      /* TODO: Deep dig via Collection.Prep and/or Templatize */
+      Object.values(collection.latest).forEach(batch => {
+        batch.forEach(item => {
+          let row = table.querySelector(`TR[itemid='${item.ExperimentId}']`);
+          Object.entries(STATE).forEach(category => {
+            category[1].forEach(state => {
+              let cell = row.querySelector(`TD[itemprop='${category[0]}'] UL`);
+              if (state in item["SimulationStateCount"]) {
+                let node = document.createElement("LI");
+                node.appendChild(document.createTextNode(item["SimulationStateCount"][state]));
+                node.classList.add(state);
+                if (/RUN|WAIT/i.test(state)) {
+                  node.classList.add("process");
+                }
+                cell.appendChild(node);
+              }
+            });
+          });
+        });
+      });
+    }, 0);
+
   } else {
     alert("failed to render!");
     console.error("failed to render", collection.latest);
@@ -169,4 +233,4 @@ const render = function (rootElement=document) {
 
 };
 
-export default { refresh };
+export default { refresh, redraw };

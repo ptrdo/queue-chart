@@ -73,50 +73,45 @@
                   </form>
                 </div>
                 <div itemid="QueueChart" class="chart queue fullwidth">
-                  <form>
-                    <figure>
-                      <table>
-                        <thead>
-                          <th>Priority</th>
-                          <th class="min">&nbsp;</th>
-                          <th>Owner</th>
-                          <th class="min">&nbsp;</th>
-                          <th>Queued</th>
-                          <th>Processing</th>
-                          <th>Done</th>
-                          <th class="min">&nbsp;</th>
-                          <th class="min">Created</th>
-                          <th>Elapsed</th>
-                        </thead>
-                        <tbody itemref="{{ KEY }}">
-                          <tr itemscope itemref="Experiment" itemid="{{ ExperimentId }}" hidden>
-                            <th itemprop="Priority" class="min"></th>
-                            <td itemprop="Selection" class="min toggle"><i class="far fa-caret-circle-right"></i><i class="fas fa-caret-circle-right"></i></td>
-                            <td itemprop="Owner" class="left" title="{{ Owner }}">
-                              <span>{{ Owner }}</span>
-                            </td>
-                            <td class="min goto"><i class="fal fa-external-link-square"></i><i class="fas fa-external-link-square"></i></td>
-                            <td itemprop="QueueCount" title="{{ QueueCount }}">
-                              <span>10</span>
-                            </td>
-                            <td itemprop="ProcessCount" class="process" title="{{ SimulationCount }}">
-                              <span>{{ SimulationCount }}</span>
-                            </td>
-                            <td itemprop="DoneCount" title="{{ DoneCount }}">
-                              <span>10</span>
-                            </td>
-                            <td class="min cancel" title="cancel this job"><i class="fal fa-hand-paper"></i><i class="fas fa-hand-paper"></i></td>
-                            <td itemprop="LastCreateTime" class="right" title="{{ LastCreateBasic }}">
-                              <time datetime="{{ LastCreateTime }}"><var>{{ LastCreateParts.0 }}</var><var>{{ LastCreateParts.1 }}</var></time>
-                            </td>
-                            <td itemprop="ElapsedTime" class="right" >
-                              <span>{{ ElapsedTime }}</span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </figure>
-                  </form>
+                  <figure>
+                    <table>
+                      <thead>
+                        <th>Priority</th>
+                        <th class="min">&nbsp;</th>
+                        <th class="min">Owner</th>
+                        <th class="min">&nbsp;</th>
+                        <th>Pre</th>
+                        <th>Active</th>
+                        <th>Post</th>
+                        <th class="min">&nbsp;</th>
+                        <th class="min">Created</th>
+                        <th class="min">
+                          <span>Elapsed</span>
+                          <button class="refresh" title="Get Latest"><i class="material-icons">refresh</i></button>
+                        </th>
+                      </thead>
+                      <tbody itemref="{{ KEY }}" hidden>
+                        <tr itemscope itemref="Experiment" itemid="{{ ExperimentId }}" hidden>
+                          <th itemprop="Priority" class="min"></th>
+                          <td itemprop="Selection" class="min toggle"><i class="far fa-caret-circle-right"></i><i class="fas fa-caret-circle-right"></i></td>
+                          <td itemprop="Owner" class="left" title="{{ Owner }}">
+                            <span>{{ Owner }}</span>
+                          </td>
+                          <td class="min goto"><i class="fal fa-external-link-square"></i><i class="fas fa-external-link-square"></i></td>
+                          <td itemprop="PreActive" title="{{ QueueCount }}"><ul></ul></td>
+                          <td itemprop="Active" title="{{ SimulationCount }}"><ul></ul></td>
+                          <td itemprop="PostActive" title="{{ DoneCount }}"><ul></ul></td>
+                          <td class="min cancel" title="cancel this job"><i class="fal fa-hand-paper"></i><i class="fas fa-hand-paper"></i></td>
+                          <td itemprop="LastCreateTime" class="right" title="{{ LastCreateBasic }}">
+                            <time datetime="{{ LastCreateTime }}"><var>{{ LastCreateParts.0 }}</var><var>{{ LastCreateParts.1 }}</var></time>
+                          </td>
+                          <td itemprop="ElapsedTime" class="right" >
+                            <span>{{ ElapsedTime }}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </figure>
                 </div>
               </div>
             </div>
