@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,user-scalable=yes">
+  <title>queue-chart/scratch/parts</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../demo/build/css/normalize.css?v=8.0.1">
+  <link rel="stylesheet" href="../demo/build/fa/css/all.css">
+  <link rel="stylesheet" href="../demo/build/css/idm-font.css">
+  <link rel="stylesheet" href="../demo/build/css/idm-global.css">
+  <link rel="stylesheet" href="../demo/build/css/idm-core.css">
+  <link rel="stylesheet" href="../demo/build/css/idm-dashboard.css">
+  <style>
+    #content section#dashboard { display: block; }
+    button[name=trigger] {
+      display: block;
+      margin: 0 auto;
+    }
+    li[style] {
+      transition: all 1s ease-out;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+</head>
+<body>
+<main role="main" id="main">
+  <article>
+    <div id="wrap">
+      <div id="content">
+        <section id="dashboard">
+          <div class="wrap">
+            <div class="truss">
+              <div itemid="Queue" class="chart queue fullwidth">
+                <form class="arrow">
+                  <figure>
+                    <figcaption>
+                      <dl>
+                        <dt itemprop="title" title="checkbox toggles showing or hiding this chart">
+                          <label><input type="checkbox" name="enabled" checked="checked"><span>Items Currently in Queue for Processing</span><dfn>hidden</dfn></label>
+                        </dt>
+                        <dd itemprop="description">On <em>All</em> Environments</dd>
+                      </dl>
+                      <legend>
+                        <button class="refresh" title="Get Latest">
+                          <i class="material-icons">refresh</i>
+                        </button>
+                        <span class="Commissioning" title="QueuedForCommission&#013;CommissionRequested&#013;Commissioned">Commissioning</span>
+                        <span class="Running" title="Validating&#013;Running">Running</span>
+                        <span class="Waiting" title="Waiting">Waiting</span>
+                        <span class="Resuming" title="QueuedForResume&#013;Resume&#013;RequestedResumed">Resuming</span>
+                        <span class="Succeeded" title="Succeeded">Succeeded</span>
+                        <span class="Failed" title="Failed">Failed</span>
+                        <span class="Canceled" title="Canceled&#013;CancelRequested">Canceled</span>
+                        <span class="Yours" title="Owner: psylwester">Yours</span>
+                      </legend>
+                    </figcaption>
+                    <output title="Queue" id="Queue" class="">
+                      <div class="queue-bucket empty"><ol><li>empty</li></ol><label>Lowest Priority</label></div>
+                      <div class="queue-bucket empty"><ol><li>empty</li></ol><label>Below Normal</label></div>
+                      <div class="queue-bucket" style="flex-grow: 1500;">
+                        <ol>
+                          <li style="margin-right: 0px;">
+                            <ul title="" class="item detailed" data-id="demo">
+                              <li class="block" style="flex-grow: 0;">
+                                <dfn class="tooltip" style="margin-left: 124px; margin-top: 0px;">
+                                  <a href="#null">
+                                    <dl>
+                                      <dt>luumbo_funest_spline_sweep</dt>
+                                      <dd><var>Owner</var><data>jsuresh</data></dd>
+                                      <dd>
+                                        <var>Experiment</var>
+                                        <data>946d6e08-c15b<sup>…</sup></data>
+                                      </dd>
+                                      <dd>
+                                        <var>Node Group</var><data>emod_32cores</data>
+                                      </dd>
+                                      <dd>
+                                        <var>Created</var>
+                                        <data>~1.8 hrs ago <i>@ last refresh</i></data>
+                                      </dd>
+                                      <dd>
+                                        <var>Simulations</var>
+                                        <data>1</data>
+                                      </dd>
+                                      <dd>
+                                        <hr>
+                                      </dd>
+                                      <dd>
+                                        <var>Running</var>
+                                        <data>1</data>
+                                      </dd>
+                                    </dl>
+                                  </a>
+                                </dfn>
+                              </li>
+                              <li class="Commissioned" style="flex-grow: 1;">
+                                <a href="#null" title="Explore Running Simulations"><var>1</var></a><!--ins class="arrow"><b></b></ins-->
+                              </li>
+                              <li class="Running process" style="flex-grow: 3;">
+                                <a href="#null" title="Explore Running Simulations"><var>3</var></a><!--ins class="arrow"><b></b></ins-->
+                              </li>
+                              <li class="Succeeded" style="flex-grow: 2;">
+                                <a href="#null" title="Explore Running Simulations"><var>1</var></a><ins class="arrow"><b></b></ins>
+                              </li>
+                            </ul>
+                          </li>
+                        </ol>
+                        <label>Normal Priority</label>
+                      </div>
+                      <div class="queue-bucket empty"><ol><li>empty</li></ol><label>Above Normal</label></div>
+                      <div class="queue-bucket empty"><ol><li>empty</li></ol><label>Highest Priority</label></div>
+                    </output>
+                    <ins class="truncation ignore">
+                      <span class="disable">Only the top 5 of each priority are being shown (there are <var>0</var> total). Click to show more.</span>
+                      <span class="enable">As many as 100 of each priority are being shown (there are <var>0</var> total). Click to show fewer.</span>
+                    </ins>
+                  </figure>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+        <button class="btn small-caps" name="trigger">trigger</button>
+      </div>
+    </div>
+  </article>
+</main>
+<script>
+  const doit = function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const ele = document.querySelector("[data-id=demo]");
+    const values = _.shuffle([1, 2, 3]);
+    const segments = ele.querySelectorAll("li[style]");
+    segments.forEach(function (li, i) {
+      let val = values[i-1];
+      li.querySelector("var").innerText = val;
+      li.setAttribute("style", `flex-grow: ${val}`);
+    });
+  }
+  const init = function () {
+    const root = document.querySelector("main");
+    const trigger = root.querySelector("button[name=trigger]");
+    trigger.addEventListener("click",doit);
+    console.log("loaded!");
+  };
+  document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
