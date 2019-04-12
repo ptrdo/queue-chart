@@ -17,8 +17,36 @@
       display: block;
       margin: 0 auto;
     }
-    li[style] {
+    li.segment {
       transition: all 1s ease-out;
+      border-left: 3px solid white !important;
+    }
+    li.segment ins.arrow {
+      display: none !important;
+    }
+    li.segment.last ins.arrow {
+      display: inline-block !important;
+    }
+    li.Clock {
+      margin-right: 7px;
+    }
+    li.Clock ins {
+      display: inline-block;
+      width: 2em;
+      height: 2em;
+      border-radius: 50%;
+      background: #55dce0;
+      text-align: center;
+    }
+    li.Clock ins b {
+      font-size: 1em;
+      line-height: 2;
+      font-weight: normal;
+      color: white;
+      transition: all 1s linear;
+    }
+    li.Clock ins b.active {
+      color: #0072a2;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
@@ -37,7 +65,10 @@
                     <figcaption>
                       <dl>
                         <dt itemprop="title" title="checkbox toggles showing or hiding this chart">
-                          <label><input type="checkbox" name="enabled" checked="checked"><span>Items Currently in Queue for Processing</span><dfn>hidden</dfn></label>
+                          <label>
+                            <input type="checkbox" name="enabled" checked="checked">
+                            <span>Items Currently in Queue for Processing</span><dfn>hidden</dfn>
+                          </label>
                         </dt>
                         <dd itemprop="description">On <em>All</em> Environments</dd>
                       </dl>
@@ -58,7 +89,7 @@
                     <output title="Queue" id="Queue" class="">
                       <div class="queue-bucket empty"><ol><li>empty</li></ol><label>Lowest Priority</label></div>
                       <div class="queue-bucket empty"><ol><li>empty</li></ol><label>Below Normal</label></div>
-                      <div class="queue-bucket" style="flex-grow: 1500;">
+                      <div class="queue-bucket" style="flex-grow: 3;">
                         <ol>
                           <li style="margin-right: 0px;">
                             <ul title="" class="item detailed" data-id="demo">
@@ -94,14 +125,17 @@
                                   </a>
                                 </dfn>
                               </li>
-                              <li class="Commissioned" style="flex-grow: 1;">
-                                <a href="#null" title="Explore Running Simulations"><var>1</var></a><!--ins class="arrow"><b></b></ins-->
+                              <li class="Clock" style="flex-grow: 0;">
+                                <ins><b>0</b></ins>
                               </li>
-                              <li class="Running process" style="flex-grow: 3;">
-                                <a href="#null" title="Explore Running Simulations"><var>3</var></a><!--ins class="arrow"><b></b></ins-->
+                              <li class="Succeeded segment ignore" style="flex-grow: 0;">
+                                <a href="#null" title="Explore Running Simulations"><var>0</var></a><ins class="arrow"><b></b></ins>
                               </li>
-                              <li class="Succeeded" style="flex-grow: 2;">
-                                <a href="#null" title="Explore Running Simulations"><var>1</var></a><ins class="arrow"><b></b></ins>
+                              <li class="Running segment process ignore" style="flex-grow: 0;">
+                                <a href="#null" title="Explore Running Simulations"><var>0</var></a><ins class="arrow"><b></b></ins>
+                              </li>
+                              <li class="Commissioned segment last" style="flex-grow: 6;">
+                                <a href="#null" title="Explore Running Simulations"><var>6</var></a><ins class="arrow"><b></b></ins>
                               </li>
                             </ul>
                           </li>
@@ -127,22 +161,56 @@
   </article>
 </main>
 <script>
+  let index = -1;
   const doit = function (event) {
-    event.preventDefault();
-    event.stopPropagation();
+    if (!!event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     const ele = document.querySelector("[data-id=demo]");
-    const values = _.shuffle([1, 2, 3]);
-    const segments = ele.querySelectorAll("li[style]");
+    const values = [[0,1,5],[0,2,4],[0,3,3],[1,3,2],[1,4,1],[2,4,0],[3,3,0],[4,2,0],[5,1,0],[6,0,0]]; // _.shuffle([1, 2, 3]);
+    const segments = ele.querySelectorAll("li.segment");
+    ++index;
+    let last = _.findLastIndex(values[index], function(i) { return i > 0; });
     segments.forEach(function (li, i) {
-      let val = values[i-1];
+      let val = values[index][i];
       li.querySelector("var").innerText = val;
       li.setAttribute("style", `flex-grow: ${val}`);
+      if (val > 0) {
+        li.classList.remove("ignore");
+      } else {
+        li.classList.add("ignore");
+      }
+      if (i == last) {
+        li.classList.add("last");
+      } else {
+        li.classList.remove("last");
+      }
+      let elapsed = ele.querySelector("li.Clock ins b");
+      elapsed.classList.remove("active");
+      switch (index) {
+        case 2:
+          elapsed.innerText = "1h";
+          elapsed.classList.add("active");
+          break;
+        case 4:
+          elapsed.innerText = "2h";
+          elapsed.classList.add("active");
+          break;
+        case 6:
+          elapsed.innerText = "3h";
+          elapsed.classList.add("active");
+          break;
+      }
     });
-  }
+  };
+  const animate = function() {
+    setInterval(doit,1200);
+  };
   const init = function () {
     const root = document.querySelector("main");
     const trigger = root.querySelector("button[name=trigger]");
-    trigger.addEventListener("click",doit);
+    trigger.addEventListener("click",animate);
     console.log("loaded!");
   };
   document.addEventListener("DOMContentLoaded", init);
