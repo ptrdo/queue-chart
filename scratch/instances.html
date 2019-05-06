@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Instances</title>
+  <link rel="icon" href="data:,">
+  <style>
+    main {
+      padding: 3rem;
+      text-align: center;
+    }
+    main input[type=button] {
+      display: block;
+      margin: 1em auto;
+      padding: 1em;
+      font-size: larger;
+    }
+    main input[type=button].dragging {
+
+    }
+  </style>
+</head>
+<body>
+<main role="main" id="main">
+  <article>
+    <section>
+
+    </section>
+  </article>
+</main>
+<script>
+  class Thing {
+    constructor(arg1, arg2) {
+
+      this.root = arg1;
+      this.input = arg2;
+
+      let button = document.createElement("INPUT");
+      button.setAttribute("type", "button");
+      button.setAttribute("value", this.input);
+
+      let instance = this;
+      button.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        let message = instance.hello || "error";
+        alert(message);
+      });
+
+      this.root.appendChild(button);
+      this.view = button;
+    }
+    salutation() {
+      return `Hi, ${this.input}.`;
+    }
+    get hello() {
+      return this.salutation();
+    }
+    destroy() {
+      this.root.removeChild(this.view); // removes listeners too
+    }
+  };
+  const init = function () {
+
+    const root = document.querySelector("main");
+    const thing1 = new Thing(root, "Peter");
+    const thing2 = new Thing(root, "Bryan");
+
+    let button = document.createElement("INPUT");
+    button.setAttribute("type", "button");
+    button.setAttribute("value", "Remove Peter");
+    button.addEventListener("click", function(event) {
+      thing1.destroy();
+    });
+
+    let dragger = document.createElement("INPUT");
+    dragger.setAttribute("type", "button");
+    dragger.setAttribute("value", "Drag Me");
+    dragger.setAttribute("draggable", true);
+    dragger.addEventListener("dragstart", function(event) {
+
+      this.classList.add("dragging");
+      console.log("drag start");
+
+      event.dataTransfer.effectAllowed = "move";
+    });
+
+    root.appendChild(button);
+    root.appendChild(dragger);
+  };
+  document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>

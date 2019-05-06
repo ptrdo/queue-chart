@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Instances</title>
+  <link rel="icon" href="data:,">
+  <style>
+    main {
+      padding: 3rem;
+      text-align: center;
+    }
+    main input[type=button] {
+      display: block;
+      width: 8rem;
+      margin: 1em auto;
+      padding: 0.5em;
+      font-size: large;
+      font-variant: all-small-caps;
+      -webkit-appearance: button;
+    }
+    main output {
+      font-family: sans-serif;
+      color: #0072a2;
+    }
+  </style>
+</head>
+<body>
+<main role="main" id="main">
+  <article>
+    <section>
+      <form>
+        <output>0</output>
+        <input type="button" name="restart" value="(re)starter">
+        <input type="button" name="traverse" value="traverse(3)">
+      </form>
+    </section>
+  </article>
+</main>
+<script>
+
+  const collection = {
+
+    summary: {},
+
+    output: {},
+
+    traverseCount: 0,
+    traverse: function () {
+
+      // will need to exempt fails, cancels
+
+      let iterate = 3;
+      for (let i = 0, cursor = this.traverseCount; i < iterate; i++) {
+        let sim,job,startDate,endDate,elapsed = 0;
+        try {
+          sim = this.output["Simulations"][cursor+i];
+          job = sim["HPCJobs"][sim["HPCJobs"].length-1];
+          startDate = new Date(Date.parse(job["StartTime"]));
+          endDate = new Date(Date.parse(job["EndTime"]));
+          elapsed = endDate-startDate;
+
+        } catch (e) {
+          console.error("traverse error:",e);
+        }
+
+        if (!!elapsed) {
+          this.summary[sim["Id"]] = elapsed;
+        }
+      }
+
+      this.traverseCount += iterate;
+      // return ((this.elapsedSum/this.elapsedCount)/1000/60/60).toFixed(4);
+      return this.summary;
+    },
+
+    prep: function (data) {
+      return data;
+    },
+
+    merge: function(data) {
+      Object.values(this.output).forEach(value => {
+        if (Array.isArray(value)) {
+          value.forEach(item => {
+            if ("ExperimentId" in item && item.ExperimentId in data) {
+              Object.assign(item,  data[item.ExperimentId]);
+            }
+          });
+        }
+      });
+    },
+
+    update: function (data) {
+      this.output = this.prep(data);
+      return this.output;
+    },
+
+    append: function (data) {
+      this.merge(data);
+      return this.output;
+    },
+
+    get latest () {
+      return this.summary;
+    }
+  };
+
+  const ingest = function () {
+    fetch("Simulations.json", { method:"GET" })
+      .then(response => response.json())
+      .then(data => collection.update(data))
+      // .then(response => fetch(ENDPOINT+API.Stats, { method:"GET" }))
+      // .then(response => response.json())
+      // .then(data => collection.append(data.Stats))
+      .catch(function (error) {
+        console.error(error);
+      })
+      .finally(function () {
+        console.log("Done!");
+      }
+    );
+  };
+
+  const init = function () {
+
+    let restarter = document.querySelector("input[name=restart]");
+    let traverser = document.querySelector("input[name=traverse]");
+
+    restarter.addEventListener("click", function(event) {
+      ingest();
+    });
+    traverser.addEventListener("click", function(event) {
+      let output = document.querySelector("output");
+      output.innerText = JSON.stringify(collection.traverse(), null, 4);
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", init);
+
+</script>
+</body>
+</html>
