@@ -52,7 +52,7 @@
     output: {},
 
     traverseCursor: 0,
-    traverse: function (iterate=3) {
+    traverse: function (iterate=50) {
 
       // will need to exempt fails, cancels
       
@@ -107,7 +107,7 @@
     
     outliers: function(Q1, IQR, Q3) {
       let result = {lower:{},upper:{}};
-      let factor = 1; // 1.5 is convention
+      let factor = 1.5; // 1.5 is convention
       const min = Q1 - (factor*IQR);
       const max = Q3 + (factor*IQR);
       console.log("outliers", min,  max);
@@ -222,6 +222,7 @@
           return ms;
         }
       }
+      console.log("statistics", statistics);
       return {
         records: Object.keys(this.summary).length,
         inHours: inHours,
@@ -240,7 +241,7 @@
   };
 
   const ingest = function () {
-    fetch("Simulations.json", { method:"GET" })
+    fetch("Simulations-500.json", { method:"GET" })
       .then(response => response.json())
       .then(data => collection.update(data))
       // .then(response => fetch(ENDPOINT+API.Stats, { method:"GET" }))
