@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Instances</title>
+  <title>Distribution</title>
   <link rel="icon" href="data:,">
   <style>
     main {
@@ -20,14 +20,14 @@
     }
     main form output {
       display: inline-block;
-      margin: 0 auto;
-      padding: 1rem;
+      margin: 2rem auto;
+      padding: 1rem 2rem;
       font-family: monospace;
       font-size: larger;
       text-align: left;
       white-space: pre;
       color: #0072a2;
-      border-bottom: 1px dotted orange;
+      background-color: lightgoldenrodyellow;
     }
     main form fieldset {
       position: absolute;
@@ -35,40 +35,76 @@
       top: 3rem;
       border: none;
     }
+    .box-plot {
+      display: block;
+      height: 4rem;
+    }
     .box-plot > hr {
       display: inline-block;
       position: absolute;
       width: 40rem;
       margin: 2rem -20rem;
       border: none; 
-      border-top: 1px dotted orange;
+      border-top: 3px solid orange;
     }
-    .box-plot section {
+    .box-plot section.plot {
       display: flex;
+      position: absolute;
       width: 40rem;
       height: 4rem;
-      margin: 1rem auto;
+      left: 50%;
+      margin-left: -20rem;
       flex-direction: row;
       flex-wrap: nowrap;
       justify-content: center;
       align-items: stretch;
     }
-    .box-plot section article {
-      border-width: 0 1px;
+    .box-plot section.plot article {
+      border-width: 0;
       border-style: solid;
       border-color: orange;
+    }
+    .box-plot section.plot article.outlier {
       flex-grow: 1;
     }
-    .box-plot section article.internal {
-      border-width: 2px 1px;
+    .box-plot section.plot article.quartile {
+      flex-grow: 3; /* 1.5 of internal */
+    }
+    .box-plot section.plot article.internal {
+      flex-grow: 2;
+    }
+    .box-plot section.plot article.outlier,
+    .box-plot section.plot article.internal {
+      border-width: 3px;
       background-color: yellow;
       z-index: 1;
     }
-    .box-plot section article.internal > ins {
+    .box-plot section.median {
       display: inline-block;
-      width: 1px;
-      height: 3.9rem;
+      position: absolute;
+      width: 3px;
+      height: 5rem;
+      margin-top: -0.5rem;
       background-color: #0072a2;
+      z-index: 4;
+    }
+    .box-plot section.points {
+      display: inline-block;
+      position: absolute;
+      width: 40rem;
+      height: 4rem;
+      left: 50%;
+      margin-left: -20rem;
+      z-index: 3;
+      mix-blend-mode: darken;
+    }
+    .box-plot section.points ins {
+      display: inline-block;
+      position: absolute;
+      width: 1px;
+      height: 2rem;
+      top: 1rem;
+      background-color: aqua;
     }
   </style>
 </head>
@@ -78,16 +114,16 @@
     <section>
       <form>
         <figure class="box-plot">
-          <hr/>
-          <section>
+          <hr>
+          <section class="plot">
             <article class="lower outlier"></article>
             <article class="lower quartile"></article>
-            <article class="internal quartile">
-              <ins class="median"/>
-            </article>
+            <article class="internal quartile"></article>
             <article class="upper quartile"></article>
             <article class="upper outlier"></article>
           </section>
+          <section class="median"></section>
+          <section class="points"></section>
         </figure>
         <output>0</output>
         <fieldset>
@@ -281,25 +317,42 @@
       console.log("statistics", statistics);
 
       let factor = 1.5;
-      let upper_fence = statistics.maximum - (statistics.upper_quartile + (statistics.inter_quartile_range * factor));
-      let lower_fence = (statistics.lower_quartile - (statistics.inter_quartile_range * factor)) - statistics.minimum;
+      let upper_bounds = statistics.maximum - (statistics.upper_quartile + (statistics.inter_quartile_range * factor));
+      let lower_bounds = (statistics.lower_quartile - (statistics.inter_quartile_range * factor)) - statistics.minimum;
       
-      document.querySelector("article.upper.outlier").style.flexGrow = upper_fence;
-      document.querySelector("article.upper.quartile").style.flexGrow = (statistics.maximum - upper_fence) - statistics.upper_quartile;
+      document.querySelector("article.upper.outlier").style.flexGrow = upper_bounds;
+      document.querySelector("article.upper.quartile").style.flexGrow = statistics.inter_quartile_range * factor;
       document.querySelector("article.internal.quartile").style.flexGrow = statistics.inter_quartile_range;
-      document.querySelector("article.lower.quartile").style.flexGrow = statistics.lower_quartile - lower_fence;
-      document.querySelector("article.lower.outlier").style.flexGrow = lower_fence;
+      document.querySelector("section.median").style.marginLeft = `${((40*((statistics.median-statistics.minimum)/(statistics.maximum-statistics.minimum)))-20).toFixed(1)}rem`;
+      document.querySelector("article.lower.quartile").style.flexGrow = statistics.inter_quartile_range * factor;
+      document.querySelector("article.lower.outlier").style.flexGrow = lower_bounds;
+      
+      console.log((100*(statistics.median-statistics.lower_quartile)/(statistics.inter_quartile_range)).toFixed(3));
 
       // document.querySelector("ins.median").style.marginLeft = (((statistics.median-lower_fence)/statistics.maximum) * 40)/2 + "rem";
+      
+      let points = document.querySelector("section.points");
+      while (points.childNodes.length) {
+        points.lastChild.remove();
+      }
+      Object.values(this.summary).forEach(function (p) {
+        let l = (100*(p-statistics.minimum)/(statistics.maximum-statistics.minimum)).toFixed(3);
+        let ins = document.createElement("INS");
+        ins.style.left = `${l}%`;
+        points.appendChild(ins);
+      });
       
       return {
         records: Object.keys(this.summary).length,
         inHours: inHours,
+        minimum: transform(statistics.minimum),
+        lower_quartile: transform(statistics.lower_quartile),
         mean: transform(statistics.arithmetic_mean),
         median: transform(statistics.median),
-        lower_quartile: transform(statistics.lower_quartile),
         upper_quartile: transform(statistics.upper_quartile), 
+        maximum: transform(statistics.maximum),
         inter_quartile_range: transform(statistics.inter_quartile_range),
+        outliers_count: Object.keys(outliers).length, 
         outliers: outliers
       }
     },
