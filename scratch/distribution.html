@@ -4,7 +4,12 @@
   <meta charset="utf-8">
   <title>Distribution</title>
   <link rel="icon" href="data:,">
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro" rel="stylesheet">
   <style>
+    body {
+      overflow-y: scroll;
+      font-family: "Source Sans Pro", sans-serif;
+    }
     main {
       padding: 3rem;
       text-align: center;
@@ -22,12 +27,13 @@
       display: inline-block;
       margin: 2rem auto;
       padding: 1rem 2rem;
-      font-family: monospace;
-      font-size: larger;
+      font-family:"Source Code Pro", monospace;
       text-align: left;
       white-space: pre;
       color: #0072a2;
       background-color: lightgoldenrodyellow;
+      box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.1), 0 6px 8px 0 rgba(0, 0, 0, 0.1);
+      border: 3px solid white;
     }
     main form #input {
       position: absolute;
@@ -62,6 +68,7 @@
       border-width: 0;
       border-style: solid;
       border-color: orange;
+      transition: all 400ms ease-out;
     }
     .box-plot section.plot article.outlier {
       flex-grow: 1;
@@ -143,15 +150,23 @@
       transform: rotate(360deg);
       transition: all 300ms ease;
     }
+    button.refresh:disabled  {
+      background: whitesmoke !important;
+      border: 1px solid gray !important;
+    }
+    button.refresh:disabled svg {
+      transform: none;
+      fill: silver !important;
+    }
     
     fieldset {
       border: none;
     }
     fieldset label {
       display: block;
-      margin-left: 2.6rem;
+      margin-left: 3.5rem;
       padding: 0 1rem;
-      font-family: monospace;
+      text-transform: uppercase;
       text-align: left;
       line-height: 2;
       color: #0072A2;
@@ -163,10 +178,10 @@
       background: palegoldenrod;
     }
     fieldset label:first-of-type {
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
     fieldset label input[type=radio] {
-      vertical-align: sub;
+      vertical-align: middle;
     }
 
   </style>
@@ -220,7 +235,25 @@
             </label>
             <label>
               <input type="radio" name="experiment" value="0"/>
-              <span>RESET</span>
+              <span>reset</span>
+            </label>
+          </fieldset>
+          <fieldset>
+            <label>
+              <input type="radio" name="fidelity" value="0"/>
+              <span>low-fi</span>
+            </label>
+            <label>
+              <input type="radio" name="fidelity" value="1"/>
+              <span>edges</span>
+            </label>
+            <label>
+              <input type="radio" name="fidelity" value="2"/>
+              <span>zones</span>
+            </label>
+            <label>
+              <input type="radio" name="fidelity" value="3"/>
+              <span>hi-fi</span>
             </label>
           </fieldset>
         </div>
@@ -241,12 +274,13 @@
 
       // will need to exempt fails, cancels
       
-      let i = 0;
+      let done = false, i = 0;
+      const sims = this.output["Simulations"];
       for (cursor = this.traverseCursor; i < iterate; i++) {
         let sim,job,startDate,endDate,elapsed = 0;
-        if (cursor+i<this.output["Simulations"].length) {
+        if (cursor+i<sims.length) {
           try {
-            sim = this.output["Simulations"][cursor+i];
+            sim = sims[cursor+i];
             job = sim["HPCJobs"][sim["HPCJobs"].length-1];
             startDate = new Date(Date.parse(job["StartTime"]));
             endDate = new Date(Date.parse(job["EndTime"]));
@@ -259,12 +293,16 @@
             this.summary[sim["Id"]] = elapsed;
           }
         } else {
+          done = true;
           break;
         }
       }
 
       this.traverseCursor += i;
-      return i > 0; // there is a change
+      return {
+        done: done || this.traverseCursor >= sims.length,
+        change: i > 0
+      }
     },
 
     prep: function (data) {
@@ -272,6 +310,8 @@
     },
 
     update: function (data) {
+      this.traverseCursor = 0;
+      this.summary = {};
       this.output = this.prep(data);
       return this.output;
     },
@@ -397,9 +437,9 @@
     },
     
     get stats() {
-      const inHours = false;
-      const statistics = this.statistics(Object.values(this.summary)||[]);
-      const outliers = this.outliers(statistics.lower_quartile, statistics.inter_quartile_range, statistics.upper_quartile);
+      let inHours = false;
+      let statistics = this.statistics(Object.values(this.summary)||[]);
+      let outliers = this.outliers(statistics.lower_quartile, statistics.inter_quartile_range, statistics.upper_quartile);
       const transform = function (ms) {
         if (inHours) {
           return parseFloat((ms/1000/60/60).toFixed(2));
@@ -477,25 +517,38 @@
     
     let form = document.querySelector("form[name=demo]");
     let refresh = document.querySelector("button[name=refresh]");
+    let output = document.querySelector("output");
 
     form.addEventListener("change", function (event) {
-      event.stopPropagation();
-      event.preventDefault();
       if (/radio/i.test(event.target.type)) {
-        let choice = document.querySelector("input[name=experiment]:checked");
-        if (/^0$/.test(choice.value)) {
-          this.reset();
-          window.location.reload();
-        } else {
-          ingest(choice.value, function (info) {
-            if (collection.traverse(info)) {
-              console.log("info", info);
-              let output = document.querySelector("output");
-              output.innerText = JSON.stringify(collection.stats,  null, 2);
+        let name = event.target.getAttribute("name");
+        let choice = document.querySelector(`input[name=${name}]:checked`);
+        switch (name) {
+          case "fidelity":
+            let params = (new URL(document.location)).searchParams;
+            params.append("fidelity", choice.value);
+
+            console.log("params", params);
+            break;
+          case "experiment":
+            if (/^0$/.test(choice.value)) {
+              window.location.reload();
             } else {
-              alert("You have them all!");
+              event.stopPropagation();
+              event.preventDefault();
+              refresh.removeAttribute("disabled");
+              document.querySelectorAll("article[style]").forEach(function(ele){ ele.removeAttribute("style"); });
+              ingest(choice.value, function () {
+                let latest = collection.traverse();
+                if (latest.change) {
+                  output.innerText = JSON.stringify(collection.stats,  null, 2);
+                }
+                if (latest.done) {
+                  refresh.setAttribute("disabled", true);
+                }
+              });
             }
-          });
+            break;
         }
       }
     });
@@ -503,14 +556,14 @@
     refresh.addEventListener("click", function (event) {
       event.stopPropagation();
       event.preventDefault();
-
-      if (collection.traverse()) {
+      let latest = collection.traverse();
+      if (latest.change) {
         let output = document.querySelector("output");
         output.innerText = JSON.stringify(collection.stats,  null, 2);
-      } else {
-        alert("You have them all!");
       }
-
+      if (latest.done) {
+        this.setAttribute("disabled", true);
+      }
     });
     
     /*
