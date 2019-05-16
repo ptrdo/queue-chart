@@ -43,6 +43,9 @@
     .box-plot {
       display: block;
       height: 4rem;
+      width: 60rem;
+      margin: 0 auto;
+      padding: 1rem;
     }
     .box-plot > hr {
       display: inline-block;
@@ -89,8 +92,8 @@
       display: inline-block;
       position: absolute;
       width: 3px;
-      height: 5rem;
-      margin-top: -0.5rem;
+      height: 6rem;
+      margin-top: -1rem;
       background-color: #0072a2;
       z-index: 4;
     }
@@ -183,6 +186,133 @@
     fieldset label input[type=radio] {
       vertical-align: middle;
     }
+    
+    .fidelity-1 .box-plot section.plot article.outlier,
+    .fidelity-1 .box-plot section.plot article.internal {
+      background-color: transparent;
+      border-color: transparent;
+    }
+    
+    .fidelity-2 .box-plot section.plot article.outlier {
+       background-color: transparent;
+       border-color: transparent black;
+       border-width: 2px;
+     }
+
+    .fidelity-2 .box-plot section.plot article.internal {
+      background-color: transparent;
+      border-color: black;
+      border-width: 2px;
+    }
+    
+    .fidelity-1 .box-plot section.median {
+      background-color: transparent;
+    }
+
+    .fidelity-2 .box-plot section.median {
+      background-color: black;
+    }
+    
+    .fidelity-1 .box-plot > hr,
+    .fidelity-2 .box-plot > hr{
+      border-color: silver;
+    }
+
+    .fidelity-1 .box-plot section.points ins {
+      background-color: hotpink;
+      height: 4rem;
+      top: 0;
+    }
+    
+    .fidelity-2 .box-plot section.points ins {
+      background-color: hotpink;
+    }
+
+    .fidelity-4 .box-plot {
+      background-color: seagreen;
+    }
+
+    .fidelity-4 .box-plot section.plot article.outlier,
+    .fidelity-4 .box-plot section.plot article.internal {
+      background-color: white;
+      border-color: transparent;
+    }
+
+    .fidelity-4 .box-plot section.points ins {
+      display: none;
+    }
+    
+    .fidelity-4 .box-plot > hr {
+      margin: 1.8rem -20rem;
+      border-top: 12px solid white;
+    }
+
+    .fidelity-4 .box-plot section.median {
+      width: 4px;
+      background-color: lime;
+    }
+    
+    .fidelity-4 .box-plot section.plot {
+      height: 3rem;
+      margin-top: 0.5rem;
+    }
+
+    ins.arrow {
+      display: none;
+    }
+
+    .fidelity-4 ins.arrow {
+      display: inline-block;
+      position: absolute;
+      width: 1em;
+      height: 2em;
+      margin-left: 30rem;
+      overflow: hidden;
+      width: 2em;
+      height: 3em;
+      margin-right: -2em;
+      margin-top: -1em;
+      zoom: 3;
+    }
+
+    .fidelity-4 ins.arrow b {
+      display: inline-block;
+      width: 2em;
+      height: 2em;
+      background: seagreen;
+      -webkit-transform: rotate(45deg) translate(-1em, 1em);
+      transform: rotate(45deg) translate(-1em, 1em);
+      width: 3em;
+      height: 3em;
+      -webkit-transform: rotate(45deg) translate(-1.5em, 1.7em);
+      transform: rotate(45deg) translate(-1.5em, 1.7em);
+    }
+    
+    span.count {
+      display: inline-block;
+      position: absolute;
+      font-size: 3em;
+      color: silver;
+      z-index: 4;
+      margin-left: -30rem;
+    }
+    
+    .fidelity-4 span.count {
+      color: white;
+    }
+
+    span.time {
+      display: inline-block;
+      position: absolute;
+      font-size: 3em;
+      color: transparent;
+      z-index: 4;
+      margin-left: 26rem;
+    }
+
+    .fidelity-4 span.time {
+      color: lime;
+    }
 
   </style>
 </head>
@@ -202,6 +332,9 @@
           </section>
           <section class="median"></section>
           <section class="points"></section>
+          <ins class="arrow"><b></b></ins>
+          <span class="count">0</span>
+          <span class="time">0'</span>
         </figure>
         <output>0</output>
         <div id="input">
@@ -240,19 +373,19 @@
           </fieldset>
           <fieldset>
             <label>
-              <input type="radio" name="fidelity" value="0"/>
+              <input type="radio" name="fidelity" value="1"/>
               <span>low-fi</span>
             </label>
             <label>
-              <input type="radio" name="fidelity" value="1"/>
+              <input type="radio" name="fidelity" value="2"/>
               <span>edges</span>
             </label>
             <label>
-              <input type="radio" name="fidelity" value="2"/>
+              <input type="radio" name="fidelity" value="3"/>
               <span>zones</span>
             </label>
             <label>
-              <input type="radio" name="fidelity" value="3"/>
+              <input type="radio" name="fidelity" value="4"/>
               <span>hi-fi</span>
             </label>
           </fieldset>
@@ -525,10 +658,8 @@
         let choice = document.querySelector(`input[name=${name}]:checked`);
         switch (name) {
           case "fidelity":
-            let params = (new URL(document.location)).searchParams;
-            params.append("fidelity", choice.value);
-
-            console.log("params", params);
+            document.body.removeAttribute("class");
+            document.body.classList.add(`fidelity-${choice.value}`);
             break;
           case "experiment":
             if (/^0$/.test(choice.value)) {
@@ -540,8 +671,12 @@
               document.querySelectorAll("article[style]").forEach(function(ele){ ele.removeAttribute("style"); });
               ingest(choice.value, function () {
                 let latest = collection.traverse();
+                let stats = collection.stats;
+                let mins = Math.round(stats.median/1000/60);
                 if (latest.change) {
-                  output.innerText = JSON.stringify(collection.stats,  null, 2);
+                  output.innerText = JSON.stringify(stats,  null, 2);
+                  document.querySelector("span.count").innerText = stats.records;
+                  document.querySelector("span.time").innerText = mins+"'";
                 }
                 if (latest.done) {
                   refresh.setAttribute("disabled", true);
@@ -559,7 +694,11 @@
       let latest = collection.traverse();
       if (latest.change) {
         let output = document.querySelector("output");
-        output.innerText = JSON.stringify(collection.stats,  null, 2);
+        let stats = collection.stats;
+        let mins = Math.round(stats.median/1000/60);
+        output.innerText = JSON.stringify(stats,  null, 2);
+        document.querySelector("span.count").innerText = stats.records;
+        document.querySelector("span.time").innerText = mins+"'";
       }
       if (latest.done) {
         this.setAttribute("disabled", true);
